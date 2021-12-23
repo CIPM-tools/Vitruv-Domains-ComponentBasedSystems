@@ -31,9 +31,9 @@
 			<url>http://update.emftext.org/release</url>
 		</repository>-->
 		<repository>
-			<id>EMFText and JaMoPP (P2 Wrapper)</id>
+			<id>  Palladio Supporting Eclipse Java Development Tools Core</id>
 			<layout>p2</layout>
-			<url>https://kit-sdq.github.io/updatesite/release/p2-wrapper/</url>
+			<url>https://updatesite.palladio-simulator.com/palladio-supporting-eclipsejavadevelopmenttools/nightly/</url>
 		</repository>
 		<repository>
 			<id>Palladiosimulator</id>

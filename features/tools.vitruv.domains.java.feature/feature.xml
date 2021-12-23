@@ -29,8 +29,6 @@
       <import plugin="edu.kit.ipd.sdq.activextendannotations"/>
       <import plugin="tools.vitruv.framework.domains"/>
       <import plugin="org.emftext.language.java"/>
-      <import plugin="org.emftext.language.java.resource"/>
-      <import plugin="org.emftext.language.java.resource.java"/>
       <import plugin="org.apache.log4j"/>
       <import plugin="org.eclipse.emf.ecore.xmi"/>
       <import plugin="org.eclipse.core.runtime"/>
