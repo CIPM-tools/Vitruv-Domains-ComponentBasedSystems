@@ -1,0 +1,18 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Vitruv Temporary Utils
+Comment: This project is only temporary, as the utils will be moved to their respective domains!
+Bundle-SymbolicName: tools.vitruv.applications.util.temporary
+Automatic-Module-Name: tools.vitruv.applications.util.temporary
+Bundle-Version: 0.3.0.qualifier
+Require-Bundle: tools.vitruv.domains.uml,
+ tools.vitruv.domains.java,
+ tools.vitruv.domains.pcm,
+ edu.kit.ipd.sdq.activextendannotations,
+ tools.vitruv.extensions.dslsruntime.reactions
+Bundle-RequiredExecutionEnvironment: JavaSE-11
+Export-Package: tools.vitruv.applications.util.temporary.java,
+ tools.vitruv.applications.util.temporary.uml,
+ tools.vitruv.applications.util.temporary.pcm,
+ tools.vitruv.applications.util.temporary.other
+Bundle-Vendor: vitruv.tools
