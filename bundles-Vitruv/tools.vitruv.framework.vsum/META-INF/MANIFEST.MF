@@ -1,0 +1,18 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Vitruv Framework Virtual Single Underlying Model
+Bundle-SymbolicName: tools.vitruv.framework.vsum;singleton:=true
+Automatic-Module-Name: tools.vitruv.framework.vsum
+Bundle-Version: 2.1.0.qualifier
+Bundle-RequiredExecutionEnvironment: JavaSE-11
+Require-Bundle: org.apache.log4j,
+ tools.vitruv.framework.domains;visibility:=reexport,
+ tools.vitruv.framework.change;visibility:=reexport,
+ tools.vitruv.framework.propagation,
+ org.eclipse.xtend.lib,
+ org.eclipse.emf.ecore.xmi,
+ edu.kit.ipd.sdq.activextendannotations
+Export-Package: tools.vitruv.framework.vsum,
+ tools.vitruv.framework.vsum.helper;x-internal:=true,
+ tools.vitruv.framework.vsum.internal;x-internal:=true
+Bundle-Vendor: vitruv.tools
