@@ -6,9 +6,7 @@ import org.eclipse.xtext.xtext.generator.model.project.*
 import org.eclipse.emf.mwe2.ecore.EcoreGenerator
 
 var rootPath = ".."
-var testRootPath = "${rootPath}/../../tests/dsls"
 var projectName = "tools.vitruv.dsls.reactions"
-var testBasePath = "${testRootPath}/${projectName}"
 
 Workflow {
 
@@ -23,15 +21,13 @@ Workflow {
 				baseName = projectName
 				rootPath = rootPath
 				runtimeTest = {
-					enabled = true
-					root = "${testBasePath}.tests"
+					enabled = false
 				}
 				eclipsePlugin = {
 					enabled = true
 				}
 				eclipsePluginTest = {
-					enabled = true
-					root = "${testBasePath}.ui.tests"
+					enabled = false
 				}
 				createEclipseMetaData = true
 			}
