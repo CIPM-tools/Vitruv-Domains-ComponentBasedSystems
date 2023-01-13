@@ -5,7 +5,7 @@ import org.eclipse.xtext.xtext.generator.*
 import org.eclipse.xtext.xtext.generator.model.project.*
 import org.eclipse.emf.mwe2.ecore.EcoreGenerator
 
-var rootPath = ".."
+var rootPath = "bundles-Vitruv"
 var projectName = "tools.vitruv.dsls.reactions"
 
 Workflow {
