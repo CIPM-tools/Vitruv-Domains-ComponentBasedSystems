@@ -7,16 +7,11 @@
 		<groupId>tools.vitruv</groupId>
 		<artifactId>cipm-vitruv-parent</artifactId>
 		<version>2.1.0-SNAPSHOT</version>
-		<relativePath>releng/cipm.consistency.vitruv.parent</relativePath>
+		<relativePath>../cipm.consistency.vitruv.parent</relativePath>
 	</parent>
-	<artifactId>cipm.consistency.vitruv</artifactId>
-	<packaging>pom</packaging>
-
-	<modules>
-		<module>bundles-Vitruv</module>
-		<module>bundles-Vitruv-Applications-ComponentBasedSystems</module>
-		<module>bundles-Vitruv-Domain-ComponentBasedSystems</module>
-		<module>releng/cipm.consistency.vitruv.updatesite</module>
-	</modules>
-
+	
+	<artifactId>cipm.consistency.vitruv.updatesite</artifactId>
+	<name>CIPM Vitruv Update Site</name>
+	<packaging>eclipse-repository</packaging>
+	
 </project>

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<site>
+   <bundle id="tools.vitruv.applications.pcmjava.util"/>
+   <bundle id="tools.vitruv.applications.util.temporary"/>
+   <bundle id="tools.vitruv.domains.java"/>
+   <bundle id="tools.vitruv.domains.pcm"/>
+   <bundle id="tools.vitruv.domains.uml"/>
+   <bundle id="tools.vitruv.dsls.common"/>
+   <bundle id="tools.vitruv.dsls.common.ui"/>
+   <bundle id="tools.vitruv.dsls.reactions"/>
+   <bundle id="tools.vitruv.dsls.reactions.ide"/>
+   <bundle id="tools.vitruv.dsls.reactions.ui"/>
+   <bundle id="tools.vitruv.extensions.dslsruntime.reactions"/>
+   <bundle id="tools.vitruv.framework.applications"/>
+   <bundle id="tools.vitruv.framework.change"/>
+   <bundle id="tools.vitruv.framework.change.echange"/>
+   <bundle id="tools.vitruv.framework.change.interaction"/>
+   <bundle id="tools.vitruv.framework.correspondence"/>
+   <bundle id="tools.vitruv.framework.domains"/>
+   <bundle id="tools.vitruv.framework.propagation"/>
+   <bundle id="tools.vitruv.framework.userinteraction"/>
+   <bundle id="tools.vitruv.framework.util"/>
+   <bundle id="tools.vitruv.framework.vsum"/>
+</site>
