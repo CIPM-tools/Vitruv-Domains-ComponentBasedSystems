@@ -10,8 +10,10 @@ import static tools.vitruv.dsls.common.elements.CommonLanguageElementsInitializa
  */
 class ReactionsLanguageStandaloneSetup extends ReactionsLanguageStandaloneSetupGenerated {
 
-	def static void doSetup() {
+	def static void doSetup() {}
+	
+	override createInjectorAndDoEMFRegistration() {
 		initializeVitruvDomainsRepository()
-		new ReactionsLanguageStandaloneSetup().createInjectorAndDoEMFRegistration()
+		super.createInjectorAndDoEMFRegistration();
 	}
 }
