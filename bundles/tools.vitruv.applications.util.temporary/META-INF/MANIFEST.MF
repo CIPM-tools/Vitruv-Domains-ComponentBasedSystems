@@ -10,7 +10,6 @@ Require-Bundle: com.google.guava,
  org.eclipse.uml2.uml,
  org.eclipse.uml2.uml.resources,
  org.emftext.language.java,
- org.emftext.language.java.resource,
  org.eclipse.xtext.xbase.lib,
  org.eclipse.xtend.lib,
  org.eclipse.xtend.lib.macro,
@@ -20,7 +19,8 @@ Require-Bundle: com.google.guava,
  edu.kit.ipd.sdq.commons.util.java,
  edu.kit.ipd.sdq.commons.util.emf,
  tools.vitruv.change.correspondence,
- tools.vitruv.dsls.reactions.runtime
+ tools.vitruv.dsls.reactions.runtime,
+ jamopp.resource
 Bundle-RequiredExecutionEnvironment: JavaSE-11
 Export-Package: tools.vitruv.applications.util.temporary.java,
  tools.vitruv.applications.util.temporary.uml,
