@@ -9,6 +9,7 @@ import tools.vitruv.change.atomic.feature.FeatureEChange
 import tools.vitruv.change.atomic.eobject.EObjectExistenceEChange
 import tools.vitruv.change.atomic.root.InsertRootEObject
 import tools.vitruv.change.atomic.root.RemoveRootEObject
+import tools.vitruv.change.atomic.root.RootEChange
 import org.eclipse.emf.ecore.EObject
 import tools.vitruv.change.atomic.feature.reference.UpdateReferenceEChange
 import tools.vitruv.change.atomic.feature.reference.SubtractiveReferenceEChange
@@ -47,7 +48,14 @@ class EChangeResolverAndApplicator {
 		val oldObject = eChange.oldContainedEObject
 		ApplyEChangeSwitch.applyEChange(eChange, forward)
 		if (eChange.isContainmentChange || affectedId != idResolver.getAndUpdateId(affectedObject)) {
-			affectedObject.updateIds(idResolver)
+			if (eChange instanceof RootEChange) {
+				val contents = eChange.resource.contents
+				for (var idx = eChange.index; idx < contents.size; idx++) {
+					updateIds(contents.get(idx), idResolver)
+				}
+			} else {
+				affectedObject.updateIds(idResolver)
+			}
 		}
 		if (oldObject !== null) {
 			oldObject.updateIds(idResolver)
