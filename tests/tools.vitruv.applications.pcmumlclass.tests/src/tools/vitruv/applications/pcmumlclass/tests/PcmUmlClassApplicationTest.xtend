@@ -12,8 +12,6 @@ import org.palladiosimulator.pcm.repository.DataType
 import tools.vitruv.applications.pcmumlclass.CombinedPcmToUmlClassReactionsChangePropagationSpecification
 import tools.vitruv.applications.pcmumlclass.CombinedUmlClassToPcmReactionsChangePropagationSpecification
 import tools.vitruv.applications.pcmumlclass.TagLiterals
-import tools.vitruv.domains.pcm.PcmDomainProvider
-import tools.vitruv.domains.uml.UmlDomainProvider
 import org.eclipse.emf.ecore.resource.ResourceSet
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl
 import org.eclipse.emf.common.util.URI
@@ -42,20 +40,18 @@ import static org.hamcrest.MatcherAssert.assertThat
 import static tools.vitruv.testutils.matchers.ModelMatchers.isResource
 import static tools.vitruv.testutils.matchers.ModelMatchers.isNoResource
 import static com.google.common.base.Preconditions.checkNotNull
-import static extension tools.vitruv.framework.util.ObjectResolutionUtil.getHierarchicUriFragment
+import static extension tools.vitruv.change.atomic.id.ObjectResolutionUtil.getHierarchicUriFragment
 import org.eclipse.emf.ecore.EStructuralFeature
+import org.junit.jupiter.api.^extension.ExtendWith
+import tools.vitruv.testutils.RegisterMetamodelsInStandalone
 
+@ExtendWith(RegisterMetamodelsInStandalone)
 abstract class PcmUmlClassApplicationTest extends LegacyVitruvApplicationTest {
 	override protected getChangePropagationSpecifications() {
 		return #[
 			new CombinedPcmToUmlClassReactionsChangePropagationSpecification,
 			new CombinedUmlClassToPcmReactionsChangePropagationSpecification
 		]
-	}
-
-	private def patchDomains() {
-		new PcmDomainProvider().domain.enableTransitiveChangePropagation
-		new UmlDomainProvider().domain.enableTransitiveChangePropagation
 	}
 
 	protected var PcmUmlClassApplicationTestHelper helper
@@ -67,7 +63,6 @@ abstract class PcmUmlClassApplicationTest extends LegacyVitruvApplicationTest {
 
 	@BeforeEach
 	def protected void setup() {
-		patchDomains
 		helper = new PcmUmlClassApplicationTestHelper(this, [uri|startRecordingChanges(uri.resourceAt)])
 		testResourceSet = new ResourceSetImpl()
 	}
@@ -107,7 +102,7 @@ abstract class PcmUmlClassApplicationTest extends LegacyVitruvApplicationTest {
 	protected def <O extends EObject> O clearResourcesAndReloadRoot(O modelElement) {
 		stopRecordingChanges(modelElement.eResource)
 		val resourceURI = modelElement.eResource.URI
-		renewResourceCache
+		disposeViewResources()
 
 		val rootElement = EObject.from(resourceURI) as O
 		if (rootElement !== null) {
@@ -121,7 +116,7 @@ abstract class PcmUmlClassApplicationTest extends LegacyVitruvApplicationTest {
 	}
 
 	def protected corresponds(EObject a, EObject b, String tag) {
-		return EcoreUtil.equals(b, getCorrespondingEObjects(a, b.class, tag).head)
+		return getCorrespondingEObjects(a, b.class, tag).exists[EcoreUtil.equals(it, b)]
 	}
 
 	// DataType consistency constraints defined here because it is used in multiple tests

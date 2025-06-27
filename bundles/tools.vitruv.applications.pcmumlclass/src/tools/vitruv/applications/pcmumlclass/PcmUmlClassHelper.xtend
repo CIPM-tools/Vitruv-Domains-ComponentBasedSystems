@@ -13,23 +13,27 @@ import org.palladiosimulator.pcm.repository.PrimitiveDataType
 import org.palladiosimulator.pcm.repository.PrimitiveTypeEnum
 import org.palladiosimulator.pcm.repository.Repository
 import org.palladiosimulator.pcm.repository.RepositoryFactory
-import tools.vitruv.extensions.dslsruntime.reactions.helper.ReactionsCorrespondenceHelper
-import tools.vitruv.framework.correspondence.CorrespondenceModel
-import tools.vitruv.framework.userinteraction.UserInteractionOptions.NotificationType
-import tools.vitruv.framework.userinteraction.UserInteractor
+import tools.vitruv.change.interaction.UserInteractionOptions.NotificationType
+import tools.vitruv.change.interaction.UserInteractor
+import org.eclipse.uml2.uml.Model
+import org.palladiosimulator.pcm.system.System
+import org.palladiosimulator.pcm.core.entity.Entity
+import tools.vitruv.applications.util.temporary.other.CorrespondenceRetriever
 
 @Utility
 class PcmUmlClassHelper {
 
-	def static PrimitiveType mapPrimitiveTypes(PrimitiveDataType pcmPredefinedPrimitiveType,
-		Iterable<PrimitiveType> umlPredifinedPrimitiveTypes) {
+	def static Iterable<PrimitiveType> mapPrimitiveTypes(PrimitiveDataType pcmPredefinedPrimitiveType,
+		Iterable<PrimitiveType> umlPredefinedPrimitiveTypes) {
 		return switch (pcmPredefinedPrimitiveType.type) {
-			case PrimitiveTypeEnum.BOOL: umlPredifinedPrimitiveTypes.findFirst[it.name == "Boolean"]
-			case PrimitiveTypeEnum.INT: umlPredifinedPrimitiveTypes.findFirst[it.name == "Integer"]
-			case PrimitiveTypeEnum.DOUBLE: umlPredifinedPrimitiveTypes.findFirst[it.name == "Real"]
-			case PrimitiveTypeEnum.STRING: umlPredifinedPrimitiveTypes.findFirst[it.name == "String"]
+			case PrimitiveTypeEnum.BOOL: umlPredefinedPrimitiveTypes.filter[it.name.toLowerCase == "bool" || it.name.toLowerCase == "boolean"]
+			case PrimitiveTypeEnum.BYTE: umlPredefinedPrimitiveTypes.filter[it.name.toLowerCase == "byte"]
+			case PrimitiveTypeEnum.CHAR: umlPredefinedPrimitiveTypes.filter[it.name.toLowerCase == "char"]
+			case PrimitiveTypeEnum.INT: umlPredefinedPrimitiveTypes.filter[it.name.toLowerCase == "int" || it.name.toLowerCase == "integer"]
+			case PrimitiveTypeEnum.DOUBLE: umlPredefinedPrimitiveTypes.filter[it.name.toLowerCase == "double" || it.name.toLowerCase == "real"]
+			case PrimitiveTypeEnum.STRING: umlPredefinedPrimitiveTypes.filter[it.name.toLowerCase == "string"]
 			default: null
-		// pcm::Char, pcm::Byte, uml::UnlimitedNatural are not mapped and the user is notified if one of these types is set
+		// uml::UnlimitedNatural are not mapped and the user is notified if one of these types is set
 		}
 	}
 
@@ -53,30 +57,30 @@ class PcmUmlClassHelper {
 	 * @return 
 	 * 		true, if any nesting package of pkg correspond to a pcm::Repository according to the correspondenceModel
 	 */
-	def static boolean isContainedInRepositoryHierarchy(Package pkg, CorrespondenceModel correspondenceModel) {
+	def static boolean isContainedInRepositoryHierarchy(Package pkg, CorrespondenceRetriever correspondenceRetriever) {
 		var parentPkg = pkg.nestingPackage
 		var repositoryFound = false
 		while (parentPkg !== null && !repositoryFound) {
-			repositoryFound = repositoryFound || isRepositoryPackage(parentPkg, correspondenceModel)
+			repositoryFound = repositoryFound || isRepositoryPackage(parentPkg, correspondenceRetriever)
 			parentPkg = parentPkg.nestingPackage
 		}
 		return repositoryFound
 	}
 
-	def private static boolean isRepositoryPackage(Package pkg, CorrespondenceModel corrModel) {
-		return !ReactionsCorrespondenceHelper.getCorrespondingObjectsOfType(corrModel, pkg,
-			TagLiterals.REPOSITORY_TO_REPOSITORY_PACKAGE, Repository).nullOrEmpty
+	def private static boolean isRepositoryPackage(Package pkg, CorrespondenceRetriever correspondenceRetriever) {
+		return correspondenceRetriever.retrieveCorrespondingElement(pkg, Repository,
+			TagLiterals.REPOSITORY_TO_REPOSITORY_PACKAGE) !== null
 	}
 
-	def static getCorrespondingPcmDataType(CorrespondenceModel corrModel, Type umlType, int lower, int upper,
-		Repository pcmRepository, UserInteractor userInteractor) {
+	def static getCorrespondingPcmDataType(Type umlType, int lower, int upper,
+		Repository pcmRepository, UserInteractor userInteractor, CorrespondenceRetriever correspondenceRetriever) {
 		if(umlType === null) return null
 
-		val pcmPrimitiveType = ReactionsCorrespondenceHelper.getCorrespondingObjectsOfType(corrModel, umlType,
-			TagLiterals.DATATYPE__TYPE, PrimitiveDataType)
-		val pcmCompositeType = ReactionsCorrespondenceHelper.getCorrespondingObjectsOfType(corrModel, umlType,
-			TagLiterals.COMPOSITE_DATATYPE__CLASS, CompositeDataType)
-		val pcmSimpleType = #[pcmPrimitiveType.head, pcmCompositeType.head].findFirst[it !== null]
+		val pcmPrimitiveType = correspondenceRetriever.retrieveCorrespondingElement(umlType,
+			PrimitiveDataType, TagLiterals.DATATYPE__TYPE) as PrimitiveDataType 
+		val pcmCompositeType = correspondenceRetriever.retrieveCorrespondingElement(umlType,
+			CompositeDataType, TagLiterals.COMPOSITE_DATATYPE__CLASS) as CompositeDataType
+		val pcmSimpleType = #[pcmPrimitiveType, pcmCompositeType].findFirst[it !== null]
 
 		if (umlType !== null && pcmSimpleType === null) {
 			// warn user that a non-synchronized DataType has been set where it should not
@@ -113,6 +117,38 @@ class PcmUmlClassHelper {
 		}
 
 		return pcmDataType
+	}
+
+	/**
+	 * Returns the name of a UML package to which the given {@link Entity} should
+	 * be mapped. The returned name conforms to the name check performed by
+	 * {@link #isPackageFor}.
+	 * 
+	 * @param entity - 	the PCM {@link Entity} to return the name of a corresponding 
+	 * 					package for 
+	 */
+	static def String getCorrespondingPackageName(Entity entity) {
+		return entity.entityName.toFirstLower
+	}
+
+	/**
+	 * Returns whether the given UML {@link Package} realizes the given PCM
+	 * {@link Entity}. This is given if their names match and, in case of a
+	 * PCM {@link Repository} or {@link System}, if the package is at the
+	 * root level.
+	 * 
+	 * @param pkg - 	the UML {@link Package}
+	 * @param entity - 	the PCM {@link Entity}
+	 */
+	static def boolean isPackageFor(Package pkg, Entity entity) {
+		// We ignore the casing of packages
+		return switch (entity) {
+			Repository,
+			System:
+				pkg.eContainer instanceof Model
+			default:
+				true
+		} && pkg.name.toLowerCase == entity.entityName.toLowerCase
 	}
 
 }

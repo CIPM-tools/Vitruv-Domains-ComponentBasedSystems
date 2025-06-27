@@ -4,15 +4,13 @@ import org.apache.log4j.Logger
 import org.eclipse.emf.ecore.EObject
 import org.eclipse.emf.ecore.resource.Resource
 import tools.vitruv.applications.cbs.commonalities.domaincommon.CommonPrimitiveType
-import tools.vitruv.extensions.dslruntime.commonalities.helper.IntermediateModelHelper
-import tools.vitruv.extensions.dslruntime.commonalities.intermediatemodelbase.Intermediate
-import tools.vitruv.extensions.dslruntime.commonalities.operators.mapping.attribute.AbstractAttributeMappingOperator
-import tools.vitruv.extensions.dslsruntime.reactions.ReactionExecutionState
+import tools.vitruv.dsls.commonalities.runtime.helper.IntermediateModelHelper
+import tools.vitruv.dsls.commonalities.runtime.intermediatemodelbase.Intermediate
+import tools.vitruv.dsls.commonalities.runtime.operators.mapping.attribute.AbstractAttributeMappingOperator
+import tools.vitruv.dsls.reactions.runtime.state.ReactionExecutionState
 
 import static com.google.common.base.Preconditions.*
-import static tools.vitruv.framework.util.XtendAssertHelper.*
-
-import static extension tools.vitruv.extensions.dslsruntime.reactions.helper.ReactionsCorrespondenceHelper.*
+import static tools.vitruv.dsls.commonalities.runtime.helper.XtendAssertHelper.*
 
 /**
  * Abstract base class for operators mapping between a domain specific
@@ -192,8 +190,8 @@ abstract class AbstractTypeReferenceOperator<R, T> extends AbstractAttributeMapp
 		assertTrue(domainType !== null)
 		assertTrue(domainType instanceof EObject)
 		// We get the corresponding intermediate type via the correspondence model:
-		val intermediateTypes = correspondenceModel.getCorrespondingObjectsOfType(domainType as EObject, null,
-			Intermediate).toList
+		val intermediateTypes = correspondenceModel.getCorrespondingEObjects(domainType as EObject).filter(Intermediate).
+			toList
 		checkState(intermediateTypes.size <= 1, '''Found more than one corresponding intermediate for «
 			participationDomainName» type '«domainType.asString»'!''')
 		val intermediateType = intermediateTypes.head // can be null
@@ -209,8 +207,7 @@ abstract class AbstractTypeReferenceOperator<R, T> extends AbstractAttributeMapp
 	protected def T getCorrespondingDomainType(Intermediate intermediateType) {
 		assertTrue(intermediateType !== null)
 		// We get the corresponding domain type via the correspondence model:
-		val domainTypes = correspondenceModel.getCorrespondingObjectsOfType(intermediateType, null,
-			domainTypeClass).toList
+		val domainTypes = correspondenceModel.getCorrespondingEObjects(intermediateType).filter(domainTypeClass).toList
 		checkState(domainTypes.size <= 1, '''Found more than one corresponding «participationDomainName» type for«
 			» intermediate type '«intermediateType»': «domainTypes»''')
 		val domainType = domainTypes.head // can be null

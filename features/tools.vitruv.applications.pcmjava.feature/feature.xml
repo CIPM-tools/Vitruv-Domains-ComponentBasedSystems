@@ -2,7 +2,7 @@
 <feature
       id="tools.vitruv.applications.pcmjava.feature"
       label="%featureName"
-      version="0.3.0.qualifier"
+      version="3.0.0"
       provider-name="%providerName"
       license-feature="tools.vitruv.license.feature"
       license-feature-version="1.0.0">
@@ -20,27 +20,19 @@
    </license>
 
    <requires>
-      <import plugin="org.eclipse.xtend.lib"/>
-      <import plugin="org.apache.log4j"/>
-      <import plugin="tools.vitruv.framework.change"/>
-      <import plugin="tools.vitruv.framework.propagation"/>
-      <import plugin="tools.vitruv.domains.pcm"/>
-      <import plugin="tools.vitruv.domains.java"/>
-      <import plugin="tools.vitruv.applications.util.temporary"/>
+      <import plugin="org.emftext.language.java"/>
+      <import plugin="org.palladiosimulator.pcm"/>
+      <import plugin="edu.kit.ipd.sdq.commons.util.emf"/>
+      <import plugin="edu.kit.ipd.sdq.commons.util.java"/>
+      <import plugin="edu.kit.ipd.sdq.commons.util.pcm"/>
       <import plugin="edu.kit.ipd.sdq.activextendannotations"/>
-      <import plugin="tools.vitruv.extensions.dslsruntime.reactions"/>
-      <import feature="tools.vitruv.applications.util.temporary.feature"/>
+      <import plugin="tools.vitruv.framework.applications"/>
+      <import plugin="tools.vitruv.dsls.reactions.runtime"/>
+      <import plugin="tools.vitruv.applications.util.temporary"/>
    </requires>
 
    <plugin
-         id="tools.vitruv.applications.pcmjava.util"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="tools.vitruv.applications.pcmjava.common"
+         id="tools.vitruv.applications.pcmjava"
          download-size="0"
          install-size="0"
          version="0.0.0"

@@ -3,10 +3,10 @@ package tools.vitruv.applications.umljava;
 import java.util.HashSet;
 import java.util.Set;
 
-import tools.vitruv.framework.applications.AbstractVitruvApplication;
-import tools.vitruv.framework.propagation.ChangePropagationSpecification;
+import tools.vitruv.framework.applications.VitruvApplication;
+import tools.vitruv.change.propagation.ChangePropagationSpecification;
 
-public class UmlJavaApplication extends AbstractVitruvApplication {
+public class UmlJavaApplication implements VitruvApplication {
 
 	@Override
 	public Set<ChangePropagationSpecification> getChangePropagationSpecifications() {

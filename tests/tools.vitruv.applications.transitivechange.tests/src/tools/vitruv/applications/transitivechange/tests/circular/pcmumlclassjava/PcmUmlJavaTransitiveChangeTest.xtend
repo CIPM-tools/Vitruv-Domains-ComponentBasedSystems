@@ -27,35 +27,45 @@ import org.emftext.language.java.members.Field
 import org.emftext.language.java.members.InterfaceMethod
 import org.emftext.language.java.members.Method
 import org.emftext.language.java.types.TypeReference
-import org.junit.jupiter.api.BeforeEach
 import tools.vitruv.applications.pcmumlclass.tests.PcmUmlClassApplicationTest
 import tools.vitruv.applications.util.temporary.java.JavaVisibility
-import tools.vitruv.domains.java.util.JavaPersistenceHelper
+import tools.vitruv.applications.util.temporary.java.JavaPersistenceHelper
 
 import static org.junit.jupiter.api.Assertions.*
-import static tools.vitruv.applications.umljava.tests.util.JavaTestUtil.*
-import static tools.vitruv.applications.umljava.tests.util.TestUtil.*
 import static tools.vitruv.applications.util.temporary.java.JavaTypeUtil.*
 import static extension tools.vitruv.applications.transitivechange.tests.util.TransitiveChangeSetup.*
 import org.emftext.language.java.containers.ContainersPackage
+import static tools.vitruv.applications.umljava.tests.util.JavaElementsTestAssertions.*
+import static tools.vitruv.applications.umljava.tests.util.JavaUmlElementEqualityValidation.*
+import org.junit.jupiter.api.BeforeEach
+import org.junit.jupiter.api.BeforeAll
+import tools.vitruv.applications.util.temporary.java.JavaSetup
+import org.junit.jupiter.api.^extension.ExtendWith
+import tools.vitruv.testutils.RegisterMetamodelsInStandalone
 
 /** 
  * Transitive change test class for networks of UML, Java and PCM models.
  * Provides additional checks for comparing the Java model to the correlating UML model.
  */
+@ExtendWith(RegisterMetamodelsInStandalone)
 abstract class PcmUmlJavaTransitiveChangeTest extends PcmUmlClassApplicationTest {
 
 	protected static final int ARRAY_LIST_SELECTION = 0
 	protected static boolean linearNetwork // set true (before class) to avoid the transformation between PCM and Java
 	static val logger = Logger.getLogger(typeof(PcmUmlJavaTransitiveChangeTest).simpleName)
 
-	override protected getChangePropagationSpecifications() {
-		linearNetwork.changePropagationSpecifications
+	@BeforeAll
+	def static void setupJavaFactories() {
+		JavaSetup.prepareFactories()
 	}
 
 	@BeforeEach
-	def void before() {
-		patchDomains() // ensures all domains execute transitively
+	def final void setupJavaClasspath() {
+		JavaSetup.resetClasspathAndRegisterStandardLibrary()
+	}
+	
+	override protected getChangePropagationSpecifications() {
+		linearNetwork.changePropagationSpecifications
 	}
 
 	def protected checkJavaType(Classifier umlClassifier) {
@@ -79,7 +89,7 @@ abstract class PcmUmlJavaTransitiveChangeTest extends PcmUmlClassApplicationTest
 	def protected checkJavaPackage(Package umlPackage) {
 		val javaPackage = getFirstCorrespondingObject(umlPackage, org.emftext.language.java.containers.Package)
 		assertEquals(umlPackage.name, javaPackage.name)
-		assertPackageEquals(umlPackage, javaPackage)
+		assertElementsEqual(umlPackage, javaPackage)
 	}
 
 	def protected checkNumberOfJavaPackages(Package umlRootPackage) {
@@ -92,7 +102,7 @@ abstract class PcmUmlJavaTransitiveChangeTest extends PcmUmlClassApplicationTest
 	def protected checkUmlPackage(org.emftext.language.java.containers.Package javaPackage) {
 		val umlPackage = getFirstCorrespondingObject(javaPackage, Package)
 		assertEquals(umlPackage.name, javaPackage.name)
-		assertPackageEquals(umlPackage, javaPackage)
+		assertElementsEqual(umlPackage, javaPackage)
 	}
 
 	def protected checkJavaAttribute(Property umlAttribute) {

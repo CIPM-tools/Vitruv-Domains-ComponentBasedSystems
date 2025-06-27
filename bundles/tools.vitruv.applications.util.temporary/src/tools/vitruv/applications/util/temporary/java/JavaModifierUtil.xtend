@@ -10,6 +10,9 @@ import org.emftext.language.java.modifiers.ModifiersFactory
 import org.emftext.language.java.modifiers.Private
 import org.emftext.language.java.modifiers.Protected
 import org.emftext.language.java.modifiers.Public
+import java.util.List
+import org.emftext.language.java.modifiers.AnnotationInstanceOrModifier
+import java.util.Objects
 
 /**
  * Util class for java modifiers and visibilities.
@@ -21,6 +24,51 @@ class JavaModifierUtil {
 
     static val logger = Logger.getLogger(JavaModifierUtil.simpleName)
 
+	static val List<Class<? extends Modifier>> JAVA_VISIBILITY_MODIFIER_TYPES = #[Public, Protected, Private]
+
+	/**
+	 * Checks if the given {@link Modifier} is a Java visibility modifier.
+	 */
+	static def boolean isVisibilityModifier(Modifier modifier) {
+		return JAVA_VISIBILITY_MODIFIER_TYPES.exists[isInstance(modifier)]
+	}
+
+	/**
+	 * Checks if the given {@link AnnotationInstanceOrModifier} is a Java
+	 * visibility modifier.
+	 */
+	static def boolean isVisibilityModifier(AnnotationInstanceOrModifier modifier) {
+		return modifier instanceof Modifier && (modifier as Modifier).isVisibilityModifier
+	}
+
+	/**
+	 * Maps the given modifiers to an {@link Iterable} of their contained
+	 * visibility modifiers.
+	 */
+	static def Iterable<Modifier> getVisibilityModifiers(Iterable<? extends AnnotationInstanceOrModifier> modifiers) {
+		return modifiers.filter(Modifier).filter[isVisibilityModifier]
+	}
+
+	/**
+	 * Produces a list of String representations of the given modifiers.
+	 * <p>
+	 * This may for example be useful for debug or exception messages.
+	 */
+	static def List<String> getModifierNames(Iterable<? extends AnnotationInstanceOrModifier> modifiers) {
+		return modifiers.map[it.class.name].toList
+	}
+
+	/**
+	 * Checks if the given modifiers are considered equal.
+	 * <p>
+	 * The modifiers are considered equal if they are either both
+	 * <code>null</code> or of the same type.
+	 */
+	static def boolean isEqualModifier(Modifier modifier1, Modifier modifier2) {
+		// Comparing their EClasses should be sufficient.
+		return Objects.equals(modifier1?.eClass, modifier2?.eClass)
+	}
+	
     /**
      * Sets for the modifiable the java visibility modifier corresponding to the given JavaVisibility enum constant.
      * If visibility is JavaVisibility.PACKAGE, all visibility modifiers will be removed from the
@@ -71,7 +119,7 @@ class JavaModifierUtil {
      */
     def static JavaVisibility getEnumConstantFromJavaVisibility(Modifier modifier) {
         if (modifier === null) {
-            return JavaVisibility.PROTECTED
+            return JavaVisibility.PACKAGE
         }
         switch (modifier.eClass.name) {
             case Private.simpleName: return JavaVisibility.PRIVATE
@@ -199,13 +247,20 @@ class JavaModifierUtil {
             default: throw new IllegalArgumentException("Unknown Java-Visibility: " + jVisibility)
         }
     }
-
+    
     /**
-     * Returns the corresponding UMLVisibility enum constant corresponding to
-     * the given java visibility modifier
+     * Returns the corresponding VisibilityKind enum constant corresponding to
+     * the visibility of the given Java element.
      */
-    def static getUMLVisibilityKindFromJavaModifier(Modifier visibilityModifier) {
-        return getUmlVisibilityKindFromJavaVisibilityConstant(getEnumConstantFromJavaVisibility(visibilityModifier))
+    def static getUmlVisibilityKindFromJavaElement(AnnotableAndModifiable javaElement) {
+    	for (modifier : javaElement.annotationsAndModifiers) {
+    		switch (modifier) {
+    			Public: return VisibilityKind.PUBLIC_LITERAL
+    			Protected: return VisibilityKind.PROTECTED_LITERAL
+    			Private: return VisibilityKind.PRIVATE_LITERAL
+    		}
+    	}
+    	return VisibilityKind.PACKAGE_LITERAL
     }
 
     /**

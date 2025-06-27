@@ -2,17 +2,15 @@ package tools.vitruv.applications.cbs.commonalities.java.operators
 
 import org.apache.log4j.Logger
 import org.emftext.language.java.containers.Package
-import tools.vitruv.extensions.dslruntime.commonalities.operators.mapping.attribute.AbstractAttributeMappingOperator
-import tools.vitruv.extensions.dslruntime.commonalities.operators.mapping.attribute.AttributeMappingOperator
-import tools.vitruv.extensions.dslruntime.commonalities.operators.mapping.attribute.AttributeType
-import tools.vitruv.extensions.dslsruntime.reactions.ReactionExecutionState
+import tools.vitruv.dsls.commonalities.runtime.operators.mapping.attribute.AbstractAttributeMappingOperator
+import tools.vitruv.dsls.commonalities.runtime.operators.mapping.attribute.AttributeMappingOperator
+import tools.vitruv.dsls.commonalities.runtime.operators.mapping.attribute.AttributeType
+import tools.vitruv.dsls.reactions.runtime.state.ReactionExecutionState
 
 import static com.google.common.base.Preconditions.*
 
-import static extension tools.vitruv.domains.java.util.JavaPersistenceHelper.*
-import static extension tools.vitruv.framework.correspondence.CorrespondenceModelUtil.getCorrespondingEObjects
+import static extension tools.vitruv.applications.util.temporary.java.JavaPersistenceHelper.*
 import org.emftext.language.java.containers.ContainersPackage
-import java.util.List
 
 @AttributeMappingOperator(
 	name='javaPackageResourcePathFromName',
@@ -61,7 +59,7 @@ class JavaPackageResourcePathFromNameOperator extends AbstractAttributeMappingOp
 	
 	private def registerUniqueJavaPackageCorrespondence() {
 		if (!correspondenceModel.getCorrespondingEObjects(ContainersPackage.Literals.PACKAGE).contains(javaPackage)) {
-			correspondenceModel.createAndAddCorrespondence(List.of(javaPackage), List.of(ContainersPackage.Literals.PACKAGE))
+			correspondenceModel.addCorrespondenceBetween(javaPackage, ContainersPackage.Literals.PACKAGE, null)
 		}
 	}
 

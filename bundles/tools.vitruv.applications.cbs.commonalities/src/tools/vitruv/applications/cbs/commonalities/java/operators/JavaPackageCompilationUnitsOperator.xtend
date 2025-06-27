@@ -6,18 +6,17 @@ import org.emftext.language.java.JavaUniquePathConstructor
 import org.emftext.language.java.commons.NamespaceAwareElement
 import org.emftext.language.java.containers.CompilationUnit
 import org.emftext.language.java.containers.Package
-import tools.vitruv.domains.java.util.JavaPersistenceHelper
-import tools.vitruv.extensions.dslruntime.commonalities.operators.mapping.reference.AbstractReferenceMappingOperator
-import tools.vitruv.extensions.dslruntime.commonalities.operators.mapping.reference.ReferenceMappingOperator
-import tools.vitruv.extensions.dslsruntime.reactions.ReactionExecutionState
+import tools.vitruv.applications.util.temporary.java.JavaPersistenceHelper
+import tools.vitruv.dsls.commonalities.runtime.operators.mapping.reference.AbstractReferenceMappingOperator
+import tools.vitruv.dsls.commonalities.runtime.operators.mapping.reference.ReferenceMappingOperator
+import tools.vitruv.dsls.reactions.runtime.state.ReactionExecutionState
 
 import static com.google.common.base.Preconditions.*
-import static tools.vitruv.framework.util.XtendAssertHelper.*
+import static tools.vitruv.dsls.commonalities.runtime.helper.XtendAssertHelper.*
 
-import static extension tools.vitruv.extensions.dslruntime.commonalities.helper.IntermediateModelHelper.*
+import static extension tools.vitruv.dsls.commonalities.runtime.helper.IntermediateModelHelper.*
 import static extension tools.vitruv.applications.util.temporary.java.JavaContainerAndClassifierUtil.*
 import org.emftext.language.java.containers.ContainersPackage
-import static extension tools.vitruv.framework.correspondence.CorrespondenceModelUtil.getCorrespondingEObjects
 
 // TODO Some duplication with JavaSubPackagesOperator
 @ReferenceMappingOperator(
@@ -58,7 +57,7 @@ class JavaPackageCompilationUnitsOperator extends AbstractReferenceMappingOperat
 		logger.trace('''Searching container for Java CompilationUnit: «compilationUnit»''')
 		// TODO avoid brute force search
 		// TODO only finds CompilationUnits with a correspondence
-		val knownPackages = correspondenceModel.getCorrespondingEObjects(ContainersPackage.Literals.PACKAGE, Package)
+		val knownPackages = correspondenceModel.getCorrespondingEObjects(ContainersPackage.Literals.PACKAGE).filter(Package)
 		return knownPackages.findFirst [
 			logger.trace('''  Found candidate package: «it»''')
 			it.packageString == compilationUnitNamespacesString
