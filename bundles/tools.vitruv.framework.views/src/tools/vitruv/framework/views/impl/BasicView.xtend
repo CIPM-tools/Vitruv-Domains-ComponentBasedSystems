@@ -97,9 +97,11 @@ package class BasicView implements ModifiableView, ChangePropagationListener {
         checkNotClosed()
         checkArgument(object !== null, "object to register as root must not be null")
         checkArgument(persistAt !== null, "URI for root to register must not be null")
-        viewResourceSet.createResource(persistAt) => [
-            contents += object
-        ]
+        var viewResource = viewResourceSet.getResource(persistAt, false);
+        if (viewResource === null) {
+        	viewResource = viewResourceSet.createResource(persistAt);
+        }
+        viewResource.getContents().add(object);
     }
 
     override void moveRoot(EObject object, URI newLocation) {
