@@ -24,6 +24,9 @@ import org.eclipse.emf.common.util.URI
 import java.nio.file.Files
 import java.nio.file.NoSuchFileException
 import tools.vitruv.framework.change.description.VitruviusChange
+import java.nio.file.Paths
+import java.util.List
+import java.nio.file.InvalidPathException
 
 package class ResourceRepositoryImpl implements ModelRepository {
 	static val logger = Logger.getLogger(ResourceRepositoryImpl)
@@ -56,13 +59,32 @@ package class ResourceRepositoryImpl implements ModelRepository {
 	}
 
 	private def writeModelsFile() {
-		Files.write(fileSystemLayout.modelsNamesFilesPath, modelsResourceSet.resources.map[URI.toString])
+		var List<String> modelPaths = modelsResourceSet.resources.map[
+			if (it.getURI().isFile()) {
+				return fileSystemLayout.getModelsNamesFilesPath().toAbsolutePath().relativize(Paths.get(it.URI.toFileString)).toString();
+			} else {
+				return it.getURI().toString();
+			}
+		];
+		Files.write(fileSystemLayout.modelsNamesFilesPath, modelPaths);
 	}
 
 	private def readModelsFile() {
 		try {
 			for (modelPath : Files.readAllLines(fileSystemLayout.modelsNamesFilesPath)) {
-				val uri = URI.createURI(modelPath)
+				var URI uri = null;
+				try {
+					uri = URI.createFileURI(
+						fileSystemLayout
+							.getModelsNamesFilesPath()
+							.toAbsolutePath()
+							.resolve(modelPath)
+							.normalize()
+							.toString()
+					);
+				} catch (InvalidPathException e) {
+					uri = URI.createURI(modelPath);
+				}
 				modelsResourceSet.loadOrCreateResource(uri)
 				createOrLoadModel(uri)
 			}
