@@ -35,10 +35,13 @@ import tools.vitruv.framework.change.description.TransactionalChange
 import java.util.Collections
 import org.eclipse.emf.ecore.resource.ResourceSet
 import tools.vitruv.framework.change.echange.id.IdResolver
+import org.apache.log4j.Logger
+import java.util.concurrent.atomic.AtomicInteger
 
 class TransactionalChangeImpl implements TransactionalChange {
 	var List<? extends EChange> eChanges
 	val List<UserInteractionBase> userInteractions = new ArrayList()
+	private static final Logger logger = Logger.getLogger(TransactionalChangeImpl.simpleName);
 
 	new(Iterable<? extends EChange> eChanges) {
 		this.eChanges = checkNotNull(eChanges, "eChanges").toList
@@ -66,9 +69,14 @@ class TransactionalChangeImpl implements TransactionalChange {
 
 	override resolveAndApply(ResourceSet resourceSet) {
 		val idResolver = IdResolver.create(resourceSet)
+		val idx = new AtomicInteger(0);
 		val resolvedChanges = eChanges.mapFixed[
+			if (idx.get % 10000 === 0) {
+				logger.info("Applied " + idx.get + " changes of " + eChanges.size);
+			}
 			val resolvedChange = resolveBefore(idResolver)
 			resolvedChange.applyForward(idResolver)
+			idx.incrementAndGet();
 			resolvedChange
 		]
 		return new TransactionalChangeImpl(resolvedChanges)

@@ -127,8 +127,13 @@ package class ChangePropagator {
 			ChangePropagationSpecification propagationSpecification
 		) {
 			resourceRepository.startRecording()
+			var idx = 0;
 			for (eChange : change.EChanges) {
+				if (idx % 10000 === 0) {
+					logger.info("Propagated " + idx + " changes of " + change.EChanges.size);
+				}
 				propagationSpecification.propagateChange(eChange, resourceRepository.correspondenceModel, resourceRepository)
+				idx++;
 			}
 			val changes = resourceRepository.endRecording()
 	
