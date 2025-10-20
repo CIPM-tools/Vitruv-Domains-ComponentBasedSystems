@@ -29,7 +29,7 @@ import static extension edu.kit.ipd.sdq.commons.util.org.eclipse.emf.ecore.resou
 
 class InternalCorrespondenceModelImpl implements InternalCorrespondenceModel {
 	static val logger = Logger.getLogger(InternalCorrespondenceModelImpl)
-	val Correspondences correspondences
+	var Correspondences correspondences
 	val Resource correspondencesResource
 
 	new(URI resourceUri) {
@@ -202,4 +202,8 @@ class InternalCorrespondenceModelImpl implements InternalCorrespondenceModel {
 		return new GenericCorrespondenceModelViewImpl(this)
 	}
 
+	override dispose() {
+		this.correspondences = null;
+		this.correspondencesResource.unload();
+	}
 }

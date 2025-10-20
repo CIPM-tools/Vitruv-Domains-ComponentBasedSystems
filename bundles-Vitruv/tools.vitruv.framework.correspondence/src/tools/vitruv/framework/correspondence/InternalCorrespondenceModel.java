@@ -122,4 +122,8 @@ public interface InternalCorrespondenceModel extends GenericCorrespondenceModel<
 	public <C extends Correspondence> Set<Correspondence> removeCorrespondencesFor(Class<C> correspondenceType,
 			Predicate<C> correspondencesFilter, List<EObject> eObjects, String tag);
 
+	/**
+	 * Disposes all resources, which are associated with the wrapped correspondence model.
+	 */
+	public void dispose();
 }

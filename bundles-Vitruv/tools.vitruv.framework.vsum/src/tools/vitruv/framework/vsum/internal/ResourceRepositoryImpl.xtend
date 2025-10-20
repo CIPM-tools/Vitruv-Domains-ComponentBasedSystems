@@ -31,7 +31,6 @@ import java.nio.file.InvalidPathException
 package class ResourceRepositoryImpl implements ModelRepository {
 	static val logger = Logger.getLogger(ResourceRepositoryImpl)
 	val ResourceSet modelsResourceSet
-	val ResourceSet correspondencesResourceSet
 	val VitruvDomainRepository domainRepository
 	val Map<URI, ModelInstance> modelInstances = new HashMap()
 	val VsumFileSystemLayout fileSystemLayout
@@ -44,7 +43,6 @@ package class ResourceRepositoryImpl implements ModelRepository {
 		this.domainRepository = domainRepository
 		this.fileSystemLayout = fileSystemLayout
 		this.modelsResourceSet = new ResourceSetImpl().withGlobalFactories()
-		this.correspondencesResourceSet = new ResourceSetImpl().withGlobalFactories()
 		this.correspondenceModel = createCorrespondenceModel(fileSystemLayout.correspondencesURI)
 		this.modelsResourceSet.eAdapters += new ResourceRegistrationAdapter [
 			if(!isLoading) getCreateOrLoadModel(it.URI)
@@ -188,9 +186,7 @@ package class ResourceRepositoryImpl implements ModelRepository {
 	override close() {
 		domainToRecorder.values.forEach[close()]
 		modelsResourceSet.resources.forEach[unload]
-		correspondencesResourceSet.resources.forEach[unload]
+		this.correspondenceModel.dispose();
 		modelsResourceSet.resources.clear()
-		correspondencesResourceSet.resources.clear()
 	}
-
 }
