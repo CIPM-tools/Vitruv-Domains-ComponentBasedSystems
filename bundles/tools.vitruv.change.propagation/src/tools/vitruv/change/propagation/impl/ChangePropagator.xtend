@@ -139,7 +139,7 @@ class ChangePropagator {
 
 			if (changePropagationMode != ChangePropagationMode.SINGLE_STEP) {
 				resultingChanges +=
-					propagationResultChanges.filter[it.containsConcreteChange].propagateTransitiveChanges
+					propgateTransitiveChanges(propagationResultChanges.filter[it.containsConcreteChange])
 			}
 			return resultingChanges
 		}
@@ -213,7 +213,7 @@ class ChangePropagator {
 		}
 
 		def private propagateNonAtomicChangeForChangePropagationSpecification(
-			VitruviusChange<EObject> change,
+			VitruviusChange change,
 			ChangePropagationSpecification propagationSpecification
 		) {
 			val transitiveChanges = modelRepository.recordChanges [
