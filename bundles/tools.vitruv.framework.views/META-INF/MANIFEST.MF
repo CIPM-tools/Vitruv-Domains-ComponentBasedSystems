@@ -13,5 +13,8 @@ Require-Bundle: org.apache.log4j,
  edu.kit.ipd.sdq.activextendannotations,
  edu.kit.ipd.sdq.commons.util.emf
 Export-Package: tools.vitruv.framework.views,
- tools.vitruv.framework.views.changederivation
+ tools.vitruv.framework.views.changederivation,
+ tools.vitruv.framework.views.selectors,
+ tools.vitruv.framework.views.impl,
+ tools.vitruv.framework.views.util
 Bundle-Vendor: vitruv.tools

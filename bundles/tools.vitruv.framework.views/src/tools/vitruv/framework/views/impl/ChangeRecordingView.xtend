@@ -8,6 +8,7 @@ import tools.vitruv.framework.views.changederivation.StateBasedChangeResolutionS
 
 import static com.google.common.base.Preconditions.checkArgument
 import static com.google.common.base.Preconditions.checkState
+import org.eclipse.xtend.lib.annotations.Accessors
 
 /**
  * A {@link View} that records changes to its resources and allows to propagate them 
@@ -15,6 +16,7 @@ import static com.google.common.base.Preconditions.checkState
  */
 class ChangeRecordingView implements ModifiableView, CommittableView {
     @Delegate
+    @Accessors(PROTECTED_GETTER)
     BasicView view
     ChangeRecorder changeRecorder
 

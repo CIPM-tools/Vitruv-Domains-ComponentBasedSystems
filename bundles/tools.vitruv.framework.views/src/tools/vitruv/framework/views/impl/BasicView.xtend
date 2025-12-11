@@ -22,7 +22,7 @@ import static extension edu.kit.ipd.sdq.commons.util.org.eclipse.emf.ecore.resou
 import tools.vitruv.change.composite.description.PropagatedChange
 import tools.vitruv.change.composite.description.VitruviusChange
 
-package class BasicView implements ModifiableView, ChangePropagationListener {
+class BasicView implements ModifiableView, ChangePropagationListener {
     @Accessors(PUBLIC_GETTER, PROTECTED_SETTER)
     var ViewSelection selection
     @Accessors(PUBLIC_GETTER, PROTECTED_SETTER)
@@ -36,7 +36,7 @@ package class BasicView implements ModifiableView, ChangePropagationListener {
     boolean viewChanged
     boolean closed
 
-    protected new(ViewCreatingViewType<? extends ViewSelector> viewType, ChangeableViewSource viewSource,
+    new(ViewCreatingViewType<? extends ViewSelector> viewType, ChangeableViewSource viewSource,
         ViewSelection selection) {
         checkArgument(viewType !== null, "view type must not be null")
         checkArgument(viewSource !== null, "view selection must not be null")
