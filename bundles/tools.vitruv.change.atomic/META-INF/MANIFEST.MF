@@ -41,5 +41,6 @@ Require-Bundle: org.eclipse.xtend.lib,
  org.eclipse.emf.ecore;visibility:=reexport,
  org.eclipse.xtext.xbase.lib,
  edu.kit.ipd.sdq.activextendannotations,
- edu.kit.ipd.sdq.commons.util.emf
+ edu.kit.ipd.sdq.commons.util.emf,
+ tools.vitruv.change.workflow;resolution:=optional
 Bundle-ActivationPolicy: lazy
