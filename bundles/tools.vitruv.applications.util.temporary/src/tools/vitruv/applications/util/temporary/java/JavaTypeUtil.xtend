@@ -182,7 +182,7 @@ class JavaTypeUtil {
         }
         val target1 = getClassifierFromTypeReference(reference1)
         val target2 = getClassifierFromTypeReference(reference2)
-        return target1 == target2 || target1.equals(target2)
+        return target1 == target2 || target1 !== null || target2 !== null || target1.equals(target2)
     }
 
     def static findImplementingInterfacesFromTypeRefs(EList<TypeReference> typeReferences) {
