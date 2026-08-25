@@ -10,7 +10,6 @@ tmp/
 # Xtext
 src-gen/
 **/model/generated/
-.antlr-generator-*-patch.jar
 
 # EMF
 model-gen/
