@@ -3,11 +3,25 @@ package tools.vitruv.framework.views;
 import java.util.List;
 
 import tools.vitruv.change.composite.description.PropagatedChange;
+import tools.vitruv.framework.views.changederivation.ChangeDerivingTimingListener;
 
 /**
  * A {@link View} that allows to commit its changes back to the underlying {@link ChangeableViewSource}.
  */
 public interface CommittableView extends View {
+	/**
+	 * Registers a listener to be notified of how long specific parts of this view's commit
+	 * process take. The listener is a generic extension point - this framework has no
+	 * dependency on whoever implements it. Default implementation ignores the listener, for
+	 * implementers that have no notion of timing to report;
+	 * {@link tools.vitruv.framework.views.impl.ChangeDerivingView} does.
+	 *
+	 * @param timingListener may be <code>null</code>, in which case no measurements are reported.
+	 */
+	default void setTimingListener(ChangeDerivingTimingListener timingListener) {
+		// no-op by default
+	}
+
 	/**
 	 * Commits the changes made to the view and its containing elements to the
 	 * underlying {@link ChangeableViewSource}. This explicitly includes all changes

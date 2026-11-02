@@ -10,6 +10,7 @@ import org.eclipse.xtend.lib.annotations.Delegate
 import tools.vitruv.change.composite.description.VitruviusChange
 import tools.vitruv.framework.views.CommittableView
 import tools.vitruv.framework.views.View
+import tools.vitruv.framework.views.changederivation.ChangeDerivingTimingListener
 import tools.vitruv.framework.views.changederivation.StateBasedChangeResolutionStrategy
 import tools.vitruv.framework.views.util.ResourceCopier
 
@@ -27,6 +28,14 @@ class ChangeDerivingView implements ModifiableView, CommittableView {
     BasicView view
 
     val StateBasedChangeResolutionStrategy changeResolutionStrategy
+    /**
+     * May be <code>null</code>, in which case no measurements are reported - see
+     * {@link CommittableView#setTimingListener(ChangeDerivingTimingListener)}. Not a constructor
+     * parameter: unlike {@link #changeResolutionStrategy}, nothing here needs it until
+     * {@link #commitChanges} is actually called, so it can be attached any time after the view
+     * already exists rather than forcing every caller through an extra constructor.
+     */
+    var ChangeDerivingTimingListener timingListener
     var ResourceSet originalStateViewResourceSet
     var HashMap<Resource, Resource> originalStateResourceMapping
 
@@ -38,6 +47,10 @@ class ChangeDerivingView implements ModifiableView, CommittableView {
         this.view = view
         this.changeResolutionStrategy = changeResolutionStrategy
         setupReferenceState
+    }
+
+    override setTimingListener(ChangeDerivingTimingListener timingListener) {
+        this.timingListener = timingListener
     }
 
     override update() {
@@ -59,9 +72,13 @@ class ChangeDerivingView implements ModifiableView, CommittableView {
         val allResources = new HashSet(originalStateResourceMapping.keySet)
         allResources.addAll(view.viewResourceSet.resources) // consider newly added resources
         for (changedResource : allResources.filter[!URI.isPathmap]) {
+            val generateStart = System.nanoTime()
             val change = generateChange(changedResource, originalStateResourceMapping.get(changedResource))
+            timingListener?.onMeasurement("changeGeneration", System.nanoTime() - generateStart)
             if (change.containsConcreteChange) {
+                val propagateStart = System.nanoTime()
                 propagatedChanges += viewSource.propagateChange(change)
+                timingListener?.onMeasurement("changeDerivingPropagation", System.nanoTime() - propagateStart)
             }
         }
         view.viewChanged = false

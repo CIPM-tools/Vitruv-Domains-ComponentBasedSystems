@@ -19,6 +19,7 @@
 				<module>tools.vitruv.change.atomic</module>
 				<module>tools.vitruv.change.composite</module>
 				<module>tools.vitruv.framework.views</module>
+				<module>tools.vitruv.framework.views.tests</module>
 				<module>tools.vitruv.applications.util.temporary</module>
 			</modules>
 		</profile>
