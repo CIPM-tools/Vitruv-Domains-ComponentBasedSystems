@@ -117,8 +117,7 @@ public interface View extends AutoCloseable {
 	 * @see #isModified()
 	 */
 	CommittableView withChangeDerivingTrait(StateBasedChangeResolutionStrategy changeResolutionStrategy);
-	
-	
+
 	/**
 	 * Returns a {@link CommittableView} based on the view's configuration.
 	 * Changes to commit are identified by comparing the current view state with its state from the last update.
